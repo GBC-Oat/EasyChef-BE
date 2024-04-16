@@ -4,7 +4,8 @@ from fastapi import FastAPI, UploadFile, File
 # from pydantic import BaseModel
 from test_yolov5_model import predict_objects, search_recipe
 import io
-from typing import List
+from typing import Dict, List
+
 
 app = FastAPI()
 
@@ -32,8 +33,12 @@ async def detect_objects(image: UploadFile = File(...)):
     
     return {"detected_labels": labels}
 
+
+
 @app.post("/find_recipe/")
-async def search_recipe_api(ingredients: List[str]):
+async def search_recipe_api(data: Dict[str, List[str]]):
+    ingredients = data.get("ingredients", [])
+    
     # Search for recipe
     recipe = search_recipe(ingredients)
     
