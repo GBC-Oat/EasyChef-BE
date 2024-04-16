@@ -2,7 +2,7 @@ from typing import Union
 from PIL import Image
 from fastapi import FastAPI, UploadFile, File
 from pydantic import BaseModel
-from test_yolov5_model import predict_objects
+from test_yolov5_model import predict_objects, search_recipe
 import io
 
 app = FastAPI()
@@ -34,5 +34,8 @@ async def detect_objects(image: UploadFile = File(...)):
     contents = await image.read()
     img = Image.open(io.BytesIO(contents))
     # Predict objects
-    labels = predict_objects(img)
-    return {"detected_labels": labels}
+    labels = predict_objects(img) 
+    
+    recipe = search_recipe(labels)
+    
+    return {"detected_labels": labels, "recipe": recipe}

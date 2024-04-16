@@ -2,6 +2,7 @@ import torch
 from fastapi import FastAPI
 from PIL import Image
 import io
+import pandas as pd
 
 model = torch.hub.load('ultralytics/yolov5', 'custom', path='yolov5/runs/train/yolov5s_results/weights/best.pt', force_reload=True)
 
@@ -18,8 +19,23 @@ def predict_objects(image: Image.Image):
     print(unique_labels)
     return unique_labels
 
-def search_recipe (ingredients):
+
+
+def search_recipe(ingredients):
     # Search recipe based on ingredients
-    pass
+    df_food = pd.read_csv('food_recipe.csv')
+    df_recipe = df_food[df_food['Ingredients'].str.contains('|'.join(ingredients))]
+
+    recipes = []
+    for _, row in df_recipe.head(5).iterrows():
+        recipe_info = {
+            "name": row['Title'],
+            "ingredients": row['Ingredients'].split(', '),  # Assuming ingredients are comma-separated
+            "instructions": row['Instructions']
+        }
+        recipes.append(recipe_info)
+
+    return recipes
+
 
 # predict_objects('test_images/fruits-and-vegetable-rack-section.jpg')
