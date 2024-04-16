@@ -1,17 +1,18 @@
 from typing import Union
 from PIL import Image
 from fastapi import FastAPI, UploadFile, File
-from pydantic import BaseModel
+# from pydantic import BaseModel
 from test_yolov5_model import predict_objects, search_recipe
 import io
+from typing import List
 
 app = FastAPI()
 
 
-class Item(BaseModel):
-    name: str
-    price: float
-    is_offer: Union[bool, None] = None
+# class Item(BaseModel):
+#     name: str
+#     price: float
+#     is_offer: Union[bool, None] = None
 
 
 @app.get("/")
@@ -19,14 +20,26 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+from typing import Union
+from PIL import Image
+from fastapi import FastAPI, UploadFile, File
+# from pydantic import BaseModel
+from test_yolov5_model import predict_objects, search_recipe
+import io
+
+app = FastAPI()
 
 
-@app.put("/items/{item_id}")
-def update_item(item_id: int, item: Item):
-    return {"item_name": item.name, "item_id": item_id}
+# class Item(BaseModel):
+#     name: str
+#     price: float
+#     is_offer: Union[bool, None] = None
+
+
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
+
 
 @app.post("/detect/")
 async def detect_objects(image: UploadFile = File(...)):
@@ -36,6 +49,13 @@ async def detect_objects(image: UploadFile = File(...)):
     # Predict objects
     labels = predict_objects(img) 
     
+    # recipe = search_recipe(labels)
+    
+    return {"detected_labels": labels}
+
+@app.post("/find_recipe/")
+async def search_recipe_api(labels: List[str]):
+    # Search for recipe
     recipe = search_recipe(labels)
     
-    return {"detected_labels": labels, "recipe": recipe}
+    return {"recipe": recipe}
