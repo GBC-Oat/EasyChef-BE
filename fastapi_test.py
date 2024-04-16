@@ -1,7 +1,9 @@
 from typing import Union
-
-from fastapi import FastAPI
+from PIL import Image
+from fastapi import FastAPI, UploadFile, File
 from pydantic import BaseModel
+from test_yolov5_model import predict_objects
+import io
 
 app = FastAPI()
 
@@ -25,3 +27,12 @@ def read_item(item_id: int, q: Union[str, None] = None):
 @app.put("/items/{item_id}")
 def update_item(item_id: int, item: Item):
     return {"item_name": item.name, "item_id": item_id}
+
+@app.post("/detect/")
+async def detect_objects(image: UploadFile = File(...)):
+    # Read image file
+    contents = await image.read()
+    img = Image.open(io.BytesIO(contents))
+    # Predict objects
+    labels = predict_objects(img)
+    return {"detected_labels": labels}
