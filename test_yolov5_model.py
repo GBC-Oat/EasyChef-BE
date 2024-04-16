@@ -24,13 +24,15 @@ def predict_objects(image: Image.Image):
 def search_recipe(ingredients):
     # Search recipe based on ingredients
     df_food = pd.read_csv('food_recipe.csv')
+    
     df_recipe = df_food[df_food['Ingredients'].str.contains('|'.join(ingredients))]
+        
 
     recipes = []
     for _, row in df_recipe.head(5).iterrows():
         recipe_info = {
             "name": row['Title'],
-            "ingredients": row['Ingredients'].split(', '),  # Assuming ingredients are comma-separated
+            "ingredients": row['Ingredients'].replace("'", "").replace("[", "").replace("]", "").split(', '),  # Assuming ingredients are comma-separated
             "instructions": row['Instructions']
         }
         recipes.append(recipe_info)

@@ -21,7 +21,7 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.post("/detect/")
+@app.post("/detect_ingredients/")
 async def detect_objects(image: UploadFile = File(...)):
     # Read image file
     contents = await image.read()
@@ -31,7 +31,7 @@ async def detect_objects(image: UploadFile = File(...)):
     
     # recipe = search_recipe(labels)
     
-    return {"detected_labels": labels}
+    return {"detected_ingredients": labels}
 
 
 
