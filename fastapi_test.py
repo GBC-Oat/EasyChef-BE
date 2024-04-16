@@ -33,8 +33,8 @@ async def detect_objects(image: UploadFile = File(...)):
     return {"detected_labels": labels}
 
 @app.post("/find_recipe/")
-async def search_recipe_api(labels: List[str]):
+async def search_recipe_api(ingredients: List[str]):
     # Search for recipe
-    recipe = search_recipe(labels)
+    recipe = search_recipe(ingredients)
     
     return {"recipe": recipe}
