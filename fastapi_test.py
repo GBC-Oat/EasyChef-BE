@@ -37,6 +37,10 @@ async def detect_objects(image: UploadFile = File(...)):
 
 @app.post("/find_recipe/")
 async def search_recipe_api(data: Dict[str, List[str]]):
+    
+    if "ingredients" not in data or not data["ingredients"] or data["ingredients"] == [""]:
+        return {"error": "No ingredients provided or empty ingredients list"}
+    
     ingredients = data.get("ingredients", [])
     
     # Search for recipe
